@@ -1,0 +1,163 @@
+{# LIkes page #}
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}{{ parent() }}
+<script src="{{ asset('js/publications.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}{{ parent() }}
+<style>
+    .no-more {
+        opacity: 0;
+    }
+
+    .bi-heart:hover {
+        color: red;
+        cursor: pointer;
+    }
+
+    .bi-heart-fill {
+        color: red;
+    }
+</style>
+{% endblock %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center display-4">{{title}}</h1>
+        <div class="row">
+
+
+
+            <div class="col-md-12 mt-4">
+
+
+                <button class="btn btn-dark btn-sm">
+                    All publications I like <span class="badge badge-light">{{ likes.getTotalItemCount }}</span>
+                </button>
+                <div class="card border-0 mb-3" style="min-height: 40em;">
+
+
+                    <div class="card-body text-secondary p-0 content-publications">
+                        <!--    Aqui utilizo los datos que vienen de pagination en el Publication COntroller podemos encontrar estos datos-->
+                        {% for publication in likes %}
+                        <div class="card border-top p-0 publication-item mt-4 mb-3">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    {% if publication.users_id|userById.image == null %}
+                                    <img src="{{ asset('img/default.png')}}" alt="" class="rounded-circle m-3"
+                                        style="width:5em; height:5em;">
+
+                                    {% else %}
+                                    <img src="{{asset('img/'~publication.users_id|userById.image)}}" alt=""
+                                        class="rounded-circle m-3" style="width:5em; height:5em;">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="card-body">
+                                        <a href="{{path('profile', {nick: publication.users_id|userById.nick })}}"
+                                            class="text-decoration-none text-dark fw-bold">
+                                            {{ publication.users_id|userById.name}}
+                                        </a>
+                                        <a href="{{path('profile', {nick: publication.users_id|userById.nick })}}"
+                                            class="text-decoration-none text-dark fw-bold">
+                                            {{ publication.users_id|userById.surname}}
+                                        </a>
+                                        <a href="{{path('profile', {nick: publication.users_id|userById.nick })}}"
+                                            class="text-decoration-none text-dark">
+                                            {{ publication.users_id|userById.nick}}
+                                        </a>
+                                        <!-- Aqui estoy llamando la extension que he creado (timeAgo)-->
+                                        <p class="card-text d-inline-block mb-1">
+                                            <small class="text-muted">{{ publication.created|timeAgo }}</small>
+                                        </p>
+                                        {#------------Aqui vamos a trabajar con todo lo relacionado con el
+                                        like-----------------#}
+                                        {#------------like btn
+                                        -----------------#}
+                                        <div type="button" data-toggle="tooltip" title="I like it"
+                                            data-placement="bottom" data-btn-like="{{ publication.id }}" class="float-end like-btn
+                                            
+                                            {% if likeStatus(app.user,publication.id) == true %}d-none{% endif %}
+                                            ">
+                                            <svg width="1.3em" height="1.3em" xmlns="http://www.w3.org/2000/svg"
+                                                width="16" height="16" fill="currentColor" class="bi bi-heart"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
+                                            </svg>
+
+                                        </div>
+
+
+                                        {#------------unlike btn ponemos en el cndicional if el nombre de la funcion
+                                        (likeStatus) -----------------#}
+
+
+                                        <div type="button" data-bs-toggle="tooltip" title="I dont't like anymore"
+                                            data-bs-placement="bottom" data-bs-title="Tooltip on bottom"
+                                            data-btn-unlike="{{ publication.id }}" class="float-end unlike-btn 
+                                            {% if likeStatus(app.user,publication.id) == false %} d-none{% endif %}
+                                            
+                                            
+                                            ">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em"
+                                                fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+                                            </svg>
+
+                                        </div>
+
+                                        <p class="card-text">
+                                            {{ publication.text }}
+                                        </p>
+                                        {% if publication.document is defined and publication.document != null %}
+
+                                        <a href="{{asset('document/'~publication.document)}}"
+                                            class="text-decoration-none" target="_blank">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z" />
+                                                <path
+                                                    d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
+                                            </svg>
+                                        </a>
+
+                                        {% endif %}
+                                        {% if publication.image is defined and publication.image != 'empty' %}
+                                        <img style="width:25em; height:25em;" src="{{asset('img/'~publication.image)}}"
+                                            class="rounded mx-auto d-block mt-2" alt="img_failed">
+
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        {% endfor %}
+                        <div class="d-flex justify-content-center">
+                            <div id="spinner1" class="spinner m-auto"><img src="{{ asset('img/loading-gif.gif')}}"
+                                    alt="" class="rounded-circle m-auto" style="width:5em; height:5em;"></div>
+                        </div>
+                    </div>
+                    <div class="no-more text-center">No more publications</div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="navigation">{{knp_pagination_render(likes)}}</div>
+        </div>
+    </div>
+    </div>
+</body>
+{% endblock %}

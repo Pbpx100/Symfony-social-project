@@ -1,0 +1,89 @@
+{# User page - all users #}
+{% extends 'base.html.twig' %}
+{% block javascripts %}{{ parent() }}
+<script src="{{ asset('js/users.js') }}"></script>
+{% endblock %}
+
+
+{% block stylesheets %}{{ parent() }}
+<style>
+    .no-more {
+        opacity: 0;
+    }
+</style>
+{% endblock %}
+
+
+{% block title %}{{title}}{% endblock %}
+
+
+{% block body %}
+
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md 12 text-center">
+
+                <h1 class="col-md-6 offset-md-3">{{title}}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+
+                <button class="btn btn-dark btn-sm">
+                    All the people <span class="badge badge-light">{{ users.getTotalItemCount }}</span>
+                </button>
+            </div>
+        </div>
+        <div class="row content-users">
+
+            {% for user in users %}
+            <div class="col-sm-12 user-item">
+                <hr>
+                {% if user.image == null %}
+                <img src="{{ asset(  'img/default.png' ) }}" alt="" class="rounded-circle m-auto"
+                    style="width:5em; height:5em;">
+
+                {% else %}
+                <img src="{{ asset('img/'~user.image)}}" alt="" class="rounded-circle m-auto"
+                    style="width:5em; height:5em;">
+                {% endif %}
+                <span class="d-inline-block">
+                    <a class="text-decoration-none text-reset" href="{{path('profile', {nick: user.nick })}}">
+                        <span class="mx-2 fw-bold">{{ user.name }} {{ user.surname }}</span>
+                        <span class="mx-2">{{ user.nick }}</span>
+                    </a>
+                    <br>
+                    <span class="mx-2">{{ user.bio }}</span>
+
+                </span>
+                {% if app.user.id != user.id %}
+                <div class="float-end">
+                    <button type="button" class="btn btn-dark btn-sm btn-follow
+                    {% if followingStatus(app.user.id,user.id) == true %}
+                    d-none                    
+                    {% endif %}
+                    " data-btn-follow="{{user.id}}">Follow</button>
+
+                    <button type="button" class="btn btn-secondary btn-sm btn-unfollow
+                    {% if followingStatus(app.user.id,user.id) == false %}
+                    d-none
+                    
+                    {% endif %}
+                    " data-btn-unfollow="{{user.id}}">Unfollow</button>
+                </div>
+
+                {% endif %}
+                <hr>
+            </div>
+            {% endfor %}
+            <div id="spinner1" class="spinner m-auto"><img src="{{ asset('img/loading-gif.gif')}}" alt=""
+                    class="rounded-circle m-auto" style="width:5em; height:5em;"></div>
+        </div>
+        <div class="no-more text-center">No more users</div>
+        <div class="row">
+            <div class="navigation">{{knp_pagination_render(users)}}</div>
+        </div>
+    </div>
+</body>
+{% endblock %}

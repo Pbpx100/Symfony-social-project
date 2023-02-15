@@ -1,0 +1,32 @@
+{# Edit user information #}
+{% extends 'base.html.twig' %}
+
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+
+<body>
+
+    <div class="container mt-4">
+        <div class="row">
+
+            <h1 class="m-auto display-4">{{title}}</h1>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+                {{ form_start(form,{'enctype': 'multipart/form-data'})}}
+                {{ form_widget(form)}}
+                {{ form_end(form)}}
+
+            </div>
+            <div class="col-md-m3">
+
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

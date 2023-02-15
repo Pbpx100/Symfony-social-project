@@ -1,0 +1,67 @@
+{# Notification page #}
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}{{ parent() }}
+<script src="{{ asset('js/notificationDelete.js') }}"></script>
+{% endblock %}
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center display-4">
+
+            </h1>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <ul class="list-group">
+
+                        {# List of notifications about user following me #}
+                        {% for notification in notifications %}
+                        {% if notification.typeNot == 'follow' %}
+
+                        <li class="list-group-item border-0 bg-light mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-bell-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
+                            </svg>
+                            <!--    Aqui vamos a utilizar la function que hemos creado en la extension de twig asi podemos recueprar el id y el name de la persona que nos sigue-->
+                            <!--    La funcion espera que yo le pase un id , el id que le paso vien del array notification qu he declarado antes que me esta siguiendo tambien ya que he peustola condicion if-->
+                            <a href="{{ path('profile', {nick: getTypeId(notification.typeId).nick })}}"><strong
+                                    class="mr-1">{{getTypeId(notification.typeId).name }}
+                                    {{getTypeId(notification.typeId).surname }}</strong></a> is Following you
+                            <button type="button" id="{{notification.id}}" class="btn-close close" aria-label="Close">
+                            </button>
+                        </li>
+                        {% endif %}
+
+                        {# List of notifications about user liking my publication #}
+                        {% if notification.typeNot == 'like' %}
+                        <li class="list-group-item border-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-bell-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
+                            </svg>
+                            <!--    Aqui vamos a utilizar la function que hemos creado en la extension de twig asi podemos recueprar el id y el name de la persona que nos sigue-->
+
+                            <a href="{{ path('profile', {nick: getTypeId(notification.typeId).nick })}}"><strong
+                                    class="mr-1">{{getTypeId(notification.typeId).name }}
+                                    {{getTypeId(notification.typeId).surname }}</strong></a> Likes your
+                            publications
+                            <!--    vamos a recuperar el id con el JS para utilizar ajax y hacerlo dinamico ver notificationDelete.js-->
+                            <button type="button" id="{{notification.id}}" class="btn-close close" aria-label="Close">
+                            </button>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

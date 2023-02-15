@@ -1,0 +1,139 @@
+{# Messages sent by user #}
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}{{ parent() }}
+<script src="{{ asset('js/publications.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}{{ parent() }}
+<style>
+    .no-more {
+        opacity: 0;
+    }
+
+    .bi-heart:hover {
+        color: red;
+        cursor: pointer;
+    }
+
+    .bi-heart-fill {
+        color: red;
+    }
+</style>
+{% endblock %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+
+<body>
+    <div class="container mt-4">
+        <div class="row mt-4">
+            <h1 class="mx-auto display-4 text-center">{{title}}</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <div class="card border-0 mb-3 mt-4" style="min-height: 40em;">
+                <div class="card-body text-secondary p-0 content-publications">
+                    <!--    Aqui utilizo los datos que vienen de pagination en el Publication COntroller podemos encontrar estos datos-->
+                    {% for publication in pagination %}
+                    <div class="card border-top p-0 publication-item">
+                        <div class="row">
+                            <div class="col-md-2">
+                                {% if publication.sender|userById.image == null %}
+                                <img src="{{ asset('img/default.png')}}" alt="" class="rounded-circle m-3"
+                                    style="width:5em; height:5em;">
+
+                                {% else %}
+                                <img src="{{asset('img/'~publication.sender|userById.image)}}" alt=""
+                                    class="rounded-circle m-3" style="width:5em; height:5em;">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-10">
+                                <div class="card-body">
+                                    <p>To: <a href="{{path('profile', {nick: publication.receiver|userById.nick })}}"
+                                            class="text-decoration-none text-dark fw-bold">
+                                            {{ publication.receiver|userById.name}}
+                                        </a>
+                                        <a href="{{path('profile', {nick: publication.sender|userById.nick })}}"
+                                            class="text-decoration-none text-dark fw-bold">
+                                            From: {{ publication.sender|userById.surname}}
+                                        </a>
+                                        <a href="{{path('profile', {nick: publication.sender|userById.nick })}}"
+                                            class="text-decoration-none text-dark">
+                                            {{ publication.sender|userById.nick}}
+                                        </a>
+                                    </p>
+
+                                    <!-- Aqui estoy llamando la extension que he creado (timeAgo)-->
+                                    <p class="card-text d-inline-block mb-1">
+                                        <small class="text-muted">{{ publication.created|date|timeAgo }}</small>
+                                    </p>
+
+
+                                    <p class="card-text">
+                                        {{ publication.message }}
+                                    </p>
+                                    {% if publication.file is defined and publication.file != null %}
+
+                                    <a href="{{asset('document/'~publication.file)}}" class="text-decoration-none"
+                                        target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                            <path
+                                                d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z" />
+                                            <path
+                                                d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
+                                        </svg>
+                                    </a>
+
+                                    {% endif %}
+                                    {% if publication.image is defined and publication.image != 'empty' %}
+
+                                    <a href="{{asset('img/'~publication.image)}}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-file-earmark-image" viewBox="0 0 16 16">
+                                            <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                                            <path
+                                                d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5V14zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4z" />
+                                        </svg>
+                                    </a>
+
+                                    {% endif %}
+                                </div>
+                                <!--Los datoq que obtenemos del id de aqui se lol vamos a enviar al js el js lo va a recuperar comos task.id y  se lo va a psar al javascrip para luego amadirle un <small> con la informacion que queremos ver de los likes-->
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    {% endfor %}
+                    <div class="d-flex justify-content-center">
+                        <div id="spinner1" class="spinner m-auto"><img src="{{ asset('img/loading-gif.gif')}}" alt=""
+                                class="rounded-circle m-auto" style="width:5em; height:5em;"></div>
+                    </div>
+                </div>
+                {% if (pagination.getTotalItemCount > 5) or (pagination.getTotalItemCount >= 0) %}
+                <div class="no-more text-center">No more publications</div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="navigation">
+
+            {{knp_pagination_render(pagination)}}
+        </div>
+    </div>
+    </div>
+
+</body>
+{% endblock %}
