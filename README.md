@@ -7,7 +7,8 @@ This is a Symfony project. It is a social network similar to Facebook. In this s
 On the other hand, you will be able to follow friends, like and comment the posts of your friends and chat with them.
 
 ## Deeper in the proejct
-In this proejct I use properly the functions given by twig and symfony. Also you can see the properly way to use extensions, create functions in the repository, use filters, etc.
+In this proejct I use properly the fu![Screenshot_2023-03-20-10-42-12-029_com whatsapp](https://user-images.githubusercontent.com/38941153/228459853-7dbcf2d6-c560-4682-b0c1-62973b45d172.jpg)
+nctions given by twig and symfony. Also you can see the properly way to use extensions, create functions in the repository, use filters, etc.
 All this used properly in the Controller or the Twig template. 
 
 If you have any questions about this project, do not hesitate to contact me.
